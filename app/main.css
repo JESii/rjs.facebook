@@ -1,0 +1,11 @@
+body {
+  background-color: cornsilk;
+
+  font-family: sans-serif;
+}
+
+.add-note {
+  background-color: #fdfdfd;
+  border: 1px solid #ccc;
+}
+
