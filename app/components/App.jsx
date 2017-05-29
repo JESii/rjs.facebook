@@ -1,71 +1,89 @@
-import React from 'react';
-import uuid from 'uuid';
-import Notes from './Notes';
+import React from 'react'; 
+import ReactDOM from 'react-dom';
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      notes: [
-        { id: uuid.v4(), task: 'Learn React'},
-        { id: uuid.v4(), task: 'Use Webpack'},
-        { id: uuid.v4(), task: 'Up Your Game'}
-      ]
-    };
-  }
-
+class ProductCategoryRow extends React.Coponent {
   render() {
-    // Why is the following line set up as it is? why {notes}?
-    // BECAUSE that's how we get the notes object added (since no database)
-    const {notes} = this.state;
+    return <tr><th colSpan="2">{this.props.category}</th></tr>
+  }
+}
+
+class ProductRow extends React.Component {
+  render() {(
+    var name = this.props.product.stocked ?
+    this.props,product.name :
+    <span style-{{color: 'red'}}>
+    {this.props.product.name}
+    </span>;
+    return (
+      <tr>
+      <td>{name}</td>
+      <td>{this.props.product.price}</td>
+      </tr>
+    ));
+  }
+}
+
+class ProductTable extends React.Component {
+  render() {
+    var rows = [];
+    var lastCategory = null;
+    this.props.products.forEach(function(product) {
+      if(product.category !== lastCategory) {
+        rows.push(<ProductCategoryRow category={product.category} key={product.category} />);
+      }
+      rows.push(<ProductRow product={product} key={product.name} />);
+      lastCategory = product.category;
+    });
+    return (
+      <table>
+      <thead>
+      <tr>
+      <th>Name</th>
+      <th>Price</th>
+      </tr>
+      </thead>
+      <tbody={rows}</tbody>
+      </table>
+    );
+  }
+}
+
+class SearchBar extends React.component {
+  render() {
+    return (
+      <form>
+      <input type="text" placeholder-"Search..." />
+      <p> <input type="checkbox" />
+      {' '}
+      Only show products in stock
+      </p>
+      </form>
+    );
+  }
+}
+
+class FilterableProductTable extends React.Component {
+  render() {
     return (
       <div>
-        <button className="add-note" onClick={this.addNote}>+ Add Note</button>
-        <Notes
-          notes={notes}
-          onNoteClick={this.activateNoteEdit}
-          onEdit={this.editNote}
-          onDelete={this.deleteNote}
-        />
+      <SearchBar />
+      <ProductTable products={this.props.products} />
       </div>
     );
   }
-  activateNoteEdit = (id) => {
-    this.setState({
-      notes: this.state.notes.map(note => {
-        if(note.id === id) {
-          note.editing = true;
-        }
-        return note;
-      })
-    });
-  }
-
-  editNote = (id, task) => {
-    this.setState({
-      notes: this.state.notes.map(note => {
-        if(note.id === id) {
-          note.editing = false;
-           note.task = task;
-        }
-        return note;
-      })
-    });
-  }
-
-  deleteNote=(id, e) => {
-    e.stopPropagation();
-      this.setState({
-        notes: this.state.notes.filter(note => note.id !== id)
-      });
-  }
-
-  addNote = () => {
-    this.setState ({
-      notes: this.state.notes.concat([{
-        id: uuid.v4(),
-        task: 'New Task'
-      }])
-    });
-  }
 }
+
+var PRODUCTS = [
+  {category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football' }
+  {category: 'Sporting Goods', price: '$9.99', stocked: true, name: 'Baseball' }
+  {category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball' }
+  {category: 'Electronics', price: '$99.99', stocked: true, name: 'iPad Touch' }
+  {category: 'Electronics', price: '$399.99', stocked: false, name: 'iPhone 5' }
+  {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7' }
+];
+
+// ReactDOM.render(
+//   <FilterableProductTable products={PRODUCTS} />,
+//   document.getElementById('container')
+// );
+
